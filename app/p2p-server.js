@@ -7,6 +7,7 @@ class P2pServer{
     constructor(blockchain, transactionPool){
         this.blockchain = blockchain;
         this.transactionPool = transactionPool;
+        
         this.sockets = [];
     }
 
@@ -37,8 +38,10 @@ class P2pServer{
     messageHandler(socket){
         socket.on('message', message =>{
             const data = JSON.parse(message);
-            if(data.transacation){
-                this.transactionPool.updateOrAddTransaction(data.transacation)
+            console.log(this.transactionPool)
+            if(data.transaction){
+                console.log("opa")
+                this.transactionPool.updateOrAddTransaction(data.transaction)
             }
             else{
                 this.blockchain.replaceChain(data);   
