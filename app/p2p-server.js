@@ -38,10 +38,11 @@ class P2pServer{
     messageHandler(socket){
         socket.on('message', message =>{
             const data = JSON.parse(message);
-            console.log(this.transactionPool)
             if(data.transaction){
-                console.log("opa")
                 this.transactionPool.updateOrAddTransaction(data.transaction)
+            }
+            else if(data.clear){
+                this.transactionPool.clear();
             }
             else{
                 this.blockchain.replaceChain(data);   
@@ -56,11 +57,14 @@ class P2pServer{
         socket.send(JSON.stringify({transaction}))
     }
     syncChains(){
-        this.sockets.forEach(socket => this.sendChain({socket}))
+        this.sockets.forEach(socket => this.sendChain(socket))
     }
 
-    broadcastTransaction(transacation){
-        this.sockets.forEach( socket => this.sendTransaction(socket, transacation));
+    broadcastTransaction(transaction){
+        this.sockets.forEach( socket => this.sendTransaction(socket, transaction));
+    }
+    broadcastClearTransaction(){
+        this.sockets.forEach(socket => socket.send(JSON.stringify({clear: 'clear'})));
     }    
 }
 
